@@ -1,9 +1,12 @@
 package com.techelevator.tenmo.services;
 
 
+import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -78,6 +81,21 @@ public class ConsoleService {
             }
         }
     }
+
+    public void displayAllUsers(User[] users, AuthenticatedUser currentUser) {
+        System.out.println("-------------------------------------");
+        System.out.println("Users");
+        System.out.println("ID      Name");
+        System.out.println("-------------------------------------");
+        for (User user : users) {
+            if (!user.getId().equals(currentUser.getUser().getId())) {
+                System.out.println(user.getId() + "    " + user.getUsername());
+            }
+        }
+        System.out.println("----------" + System.lineSeparator());
+
+    }
+
 
     public void pause() {
         System.out.println("\nPress Enter to continue...");
