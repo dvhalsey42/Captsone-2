@@ -5,6 +5,7 @@ import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.TransferService;
 
 import java.math.BigDecimal;
 
@@ -16,7 +17,8 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
-    private AccountService accountService = new AccountService();
+    private AccountService accountService;
+    private TransferService transferService;
 
     public static void main(String[] args) {
         App app = new App();
@@ -90,7 +92,7 @@ public class App {
 
 	private void viewCurrentBalance() {
 		// TODO Auto-generated method stub
-        System.out.println("Your current account balance is: " + accountService.getBalance(currentUser, currentUser.getUser().getId()));
+        System.out.println("Your current account balance is: " + accountService.getBalance(currentUser));
         consoleService.pause();
         mainMenu();
 	}
@@ -109,8 +111,15 @@ public class App {
 		// TODO Auto-generated method stub
 		consoleService.displayAllUsers(accountService.getAllUsers(currentUser), currentUser);
         int userId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+        if (userId == 0) {
+            mainMenu();
+        }
         BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
-        
+        if (amount.signum() > 0 && (amount.compareTo(accountService.getBalance(currentUser)) > 0
+                || amount.compareTo(accountService.getBalance(currentUser)) == 0)) {
+
+        }
+
 	}
 
 	private void requestBucks() {

@@ -10,20 +10,18 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AccountService {
 
     private static final String API_BASE_URL = "http://localhost:8080";
     RestTemplate restTemplate = new RestTemplate();
 
-    public BigDecimal getBalance(AuthenticatedUser user, Long userId) {
+    public BigDecimal getBalance(AuthenticatedUser user) {
         BigDecimal balance = null;
 
         try {
             ResponseEntity<BigDecimal> response =
-                    restTemplate.exchange(API_BASE_URL + "/balance/" + userId, HttpMethod.GET, makeAuthEntity(user), BigDecimal.class);
+                    restTemplate.exchange(API_BASE_URL + "/balance/" + user.getUser().getId(), HttpMethod.GET, makeAuthEntity(user), BigDecimal.class);
             balance = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());

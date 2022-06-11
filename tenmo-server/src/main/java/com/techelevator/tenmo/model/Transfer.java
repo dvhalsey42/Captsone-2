@@ -4,12 +4,26 @@ import java.math.BigDecimal;
 
 public class Transfer {
 
+    enum TransferType {
+        REQUEST,
+        SEND
+    }
+
+    enum TransferStatus {
+        PENDING,
+        APPROVED,
+        REJECTED
+    }
+
     private int transferId;
     private int transferTypeId;
     private int transferStatusId;
     private int accountFrom;
     private int accountTo;
     private BigDecimal amount;
+
+
+    public Transfer(){}
 
     public Transfer(int transferId, int transferTypeId, int transferStatusId, int accountFrom, int accountTo, BigDecimal amount) {
         this.transferId = transferId;

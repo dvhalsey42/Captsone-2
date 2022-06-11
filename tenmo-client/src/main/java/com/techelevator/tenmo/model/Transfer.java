@@ -4,6 +4,17 @@ import java.math.BigDecimal;
 
 public class Transfer {
 
+    enum TransferType {
+        REQUEST,
+        SEND
+    }
+
+    enum TransferStatus {
+        PENDING,
+        APPROVED,
+        REJECTED
+    }
+
     private int transferId;
     private int transferTypeId;
     private int transferStatusId;
