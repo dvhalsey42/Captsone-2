@@ -2,10 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
-import com.techelevator.tenmo.services.TransferService;
+import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
 
@@ -17,8 +14,9 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
-    private AccountService accountService;
-    private TransferService transferService;
+    private AccountService accountService = new AccountService();
+    private TransferService transferService = new TransferService();
+    private UserService userService = new UserService();
 
     public static void main(String[] args) {
         App app = new App();
@@ -108,27 +106,31 @@ public class App {
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
-		consoleService.displayAllUsers(accountService.getAllUsers(currentUser), currentUser);
-        Long userId = (long) consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+
+		consoleService.displayAllUsers(userService.getAllUsers(currentUser), currentUser);
+        int userId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
         if (userId == 0) {
             mainMenu();
         }
         BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
-        if (amount.signum() > 0 && (amount.compareTo(accountService.getBalance(currentUser)) > 0
-                || amount.compareTo(accountService.getBalance(currentUser)) == 0)) {
-        if(transferService.createSendTransfer(currentUser, userId, amount)){
-            //call transfer logic methods
-            //write out success message
-            System.out.println("Success!");
-        }
-        }
+        if (amount.signum() > 0 && amount.compareTo(accountService.getBalance(currentUser)) <= 0) {
 
+            int fromAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
+            int toAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();
+
+            if(transferService.createSendTransfer(currentUser, fromAccountId, toAccountId, amount)) {
+                //call transfer logic methods
+                //write out success message
+                System.out.println("Success!");
+            } else {
+                System.out.println("Failure");
+            }
+        }
 	}
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
-        consoleService.displayAllUsers(accountService.getAllUsers(currentUser), currentUser);
+        consoleService.displayAllUsers(userService.getAllUsers(currentUser), currentUser);
         consoleService.pause();
     }
 

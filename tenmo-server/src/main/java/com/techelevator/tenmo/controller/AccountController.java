@@ -27,13 +27,19 @@ public class AccountController {
         return accountDao.getBalanceById(userId);
     }
 
-    @GetMapping(path = "/account/{userId}")
-    public Account getAccountByUserId(@PathVariable int userId) {
-        return accountDao.getAccountByUserId(userId);
+    @GetMapping(path = "/account")
+    public Account getAccountById(@RequestParam(defaultValue = "0") int user_id, @RequestParam(defaultValue = "0") int account_id) {
+        if (user_id > 0) {
+        return accountDao.getAccountByUserId(user_id);
+        } else if(account_id > 0){
+            return accountDao.getAccountByAccountId(account_id);
+        } else {
+            return null;
+        }
     }
 
     @GetMapping(path = "/account/{accountId}")
-    public Account getAccountByAccountId(@PathVariable int accountId) {
+    public Account getAccountById(@PathVariable int accountId) {
         return accountDao.getAccountByAccountId(accountId);
     }
 

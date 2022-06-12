@@ -16,6 +16,10 @@ public class AccountService {
     private static final String API_BASE_URL = "http://localhost:8080";
     RestTemplate restTemplate = new RestTemplate();
 
+    public AccountService() {
+
+    }
+
     public BigDecimal getBalance(AuthenticatedUser user) {
         BigDecimal balance = null;
 
@@ -29,18 +33,42 @@ public class AccountService {
         return balance;
     }
 
-    public User[] getAllUsers(AuthenticatedUser user) {
-//        List<User> users = new ArrayList<>();
-        User[] users = null;
+    public Account getAccountByUserId(AuthenticatedUser user, Long userId) {
+        Account account = null;
 
         try {
-            ResponseEntity<User[]> response =
-                    restTemplate.exchange(API_BASE_URL + "/user", HttpMethod.GET, makeAuthEntity(user), User[].class);
-            users = response.getBody();
+            ResponseEntity<Account> response =
+                    restTemplate.exchange(API_BASE_URL + "/account?user_id=" + userId, HttpMethod.GET, makeAuthEntity(user), Account.class);
+            account = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return users;
+        return account;
+    }
+
+    public Account getAccountByAccountId(AuthenticatedUser user, int accountId) {
+        Account account = null;
+
+        try {
+            ResponseEntity<Account> response =
+                    restTemplate.exchange(API_BASE_URL + "/account/?account_id=" + accountId, HttpMethod.GET, makeAuthEntity(user), Account.class);
+            account = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return account;
+    }
+
+    public boolean updateAccount(Account account, AuthenticatedUser user) {
+        boolean result = false;
+        try {
+            ResponseEntity<Boolean> response =
+                    restTemplate.exchange(API_BASE_URL + "/user" + user.getUser().getId(), HttpMethod.PUT, makeAccountEntity(account, user), Boolean.class);
+            result = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return result;
     }
 
     private HttpEntity<Account> makeAccountEntity(Account account, AuthenticatedUser user) {

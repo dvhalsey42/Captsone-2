@@ -15,8 +15,8 @@ public class TransferController {
         this.transferDao = transferDao;
     }
 
-    @PostMapping(path = "transfer/{userId}")
-    public boolean createTransfer(@RequestBody Transfer transfer, @PathVariable Long userId) {
+    @PostMapping(path = "/transfer")
+    public boolean createTransfer(@RequestBody Transfer transfer) {
         return transferDao.createTransfer(transfer);
     }
 

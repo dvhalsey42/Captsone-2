@@ -13,16 +13,16 @@ public class TransferService {
     private static final String API_BASE_URL = "http://localhost:8080";
     RestTemplate restTemplate = new RestTemplate();
 
-    public boolean createSendTransfer(AuthenticatedUser user, Long userId, BigDecimal amount) {
+    public boolean createSendTransfer(AuthenticatedUser user, int fromAccountId, int toAccountId, BigDecimal amount) {
         Transfer transfer = new Transfer();
         transfer.setTransferTypeId(2);
         transfer.setTransferStatusId(2);
-        transfer.setAccountFrom(user.getUser().getId());
-        transfer.setAccountTo(userId);
+        transfer.setAccountFrom(fromAccountId);
+        transfer.setAccountTo(toAccountId);
         transfer.setAmount(amount);
 
         ResponseEntity<Boolean> response =
-                restTemplate.exchange(API_BASE_URL + "transfer", HttpMethod.POST,
+                restTemplate.exchange(API_BASE_URL + "/transfer", HttpMethod.POST,
                         makeTransferEntity(transfer, user), Boolean.class);
         if(response.getBody() != null) {
             return response.getBody();

@@ -97,11 +97,6 @@ public class ConsoleService {
 
     }
 
-    public Transfer createSendTransfer(AuthenticatedUser user, Long userId, BigDecimal amount) {
-        Transfer transfer = new Transfer();
-        transfer.setTransferTypeId(2);
-
-    }
 
 
     public void pause() {
