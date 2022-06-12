@@ -110,14 +110,18 @@ public class App {
 	private void sendBucks() {
 		// TODO Auto-generated method stub
 		consoleService.displayAllUsers(accountService.getAllUsers(currentUser), currentUser);
-        int userId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
+        Long userId = (long) consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
         if (userId == 0) {
             mainMenu();
         }
         BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
         if (amount.signum() > 0 && (amount.compareTo(accountService.getBalance(currentUser)) > 0
                 || amount.compareTo(accountService.getBalance(currentUser)) == 0)) {
-
+        if(transferService.createSendTransfer(currentUser, userId, amount)){
+            //call transfer logic methods
+            //write out success message
+            System.out.println("Success!");
+        }
         }
 
 	}

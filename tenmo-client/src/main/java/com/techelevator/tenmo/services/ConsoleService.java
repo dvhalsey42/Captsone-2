@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.model.UserCredentials;
 
@@ -93,6 +94,12 @@ public class ConsoleService {
             }
         }
         System.out.println("----------" + System.lineSeparator());
+
+    }
+
+    public Transfer createSendTransfer(AuthenticatedUser user, Long userId, BigDecimal amount) {
+        Transfer transfer = new Transfer();
+        transfer.setTransferTypeId(2);
 
     }
 

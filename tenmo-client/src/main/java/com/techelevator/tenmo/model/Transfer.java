@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.model;
 
+import io.cucumber.java.sl.In;
+
 import java.math.BigDecimal;
 
 public class Transfer {
@@ -15,7 +17,7 @@ public class Transfer {
         REJECTED
     }
 
-    private int transferId;
+    private Integer transferId;
     private int transferTypeId;
     private int transferStatusId;
     private int accountFrom;
@@ -25,11 +27,11 @@ public class Transfer {
     public Transfer() {
     }
 
-    public int getTransferId() {
+    public Integer getTransferId() {
         return transferId;
     }
 
-    public void setTransferId(int transferId) {
+    public void setTransferId(Integer transferId) {
         this.transferId = transferId;
     }
 
@@ -49,19 +51,19 @@ public class Transfer {
         this.transferStatusId = transferStatusId;
     }
 
-    public int getAccountFrom() {
+    public Long getAccountFrom() {
         return accountFrom;
     }
 
-    public void setAccountFrom(int accountFrom) {
+    public void setAccountFrom(Long accountFrom) {
         this.accountFrom = accountFrom;
     }
 
-    public int getAccountTo() {
+    public Long getAccountTo() {
         return accountTo;
     }
 
-    public void setAccountTo(int accountTo) {
+    public void setAccountTo(Long accountTo) {
         this.accountTo = accountTo;
     }
 
