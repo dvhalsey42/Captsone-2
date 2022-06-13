@@ -38,13 +38,8 @@ public class AccountController {
         }
     }
 
-    @GetMapping(path = "/account/{accountId}")
-    public Account getAccountById(@PathVariable int accountId) {
-        return accountDao.getAccountByAccountId(accountId);
-    }
-
-    @PutMapping(path = "/account/{accountId}")
-    public boolean updateAccount(@RequestBody Account account, @PathVariable int accountId) {
+    @PutMapping(path = "/account")
+    public boolean updateAccount(@RequestBody Account account) {
         return accountDao.updateAccount(account);
     }
 }

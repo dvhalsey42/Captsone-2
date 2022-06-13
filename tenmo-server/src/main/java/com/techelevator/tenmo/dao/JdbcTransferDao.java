@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -26,32 +27,37 @@ public class JdbcTransferDao implements TransferDao{
 
     @Override
     public List<Transfer> getTransfersByUserId(int userId) {
-        String sql = "SELECT transfer_id, username,  amount " ;
+        List<Transfer> transfers = new ArrayList<>();
 
-        return null;
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+                "FROM transfer " +
+                "JOIN account on account_from = account_id OR account_to = account_id " +
+                "WHERE user_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while (results.next()) {
+            transfers.add(mapRowToTransfer(results));
+        }
+        return transfers;
     }
 
     @Override
-    public Transfer getTransfersByTransferId(int transferId) {
+    public Transfer getTransferByTransferId(int transferId) {
         Transfer transfer = null;
 
-        String sql = "SELECT transfer_id, account_from, account_to, transfer_type_desc, transfer_status_desc, amount " +
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
                 "FROM transfer " +
-                "NATURAL JOIN transfer_type " +
-                "NATURAL JOIN transfer_status " +
                 "WHERE transfer_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         if (results.next()) {
-
+            transfer = mapRowToTransfer(results);
         }
-
-        return null;
+        return transfer;
     }
 
-    @Override
-    public List<Transfer> getAllTransfers() {
-        return null;
-    }
+//    @Override
+//    public List<Transfer> getAllTransfers() {
+//        return null;
+//    }
 
     @Override
     public List<Transfer> getPendingTransfers(int userId) {
@@ -63,7 +69,15 @@ public class JdbcTransferDao implements TransferDao{
 
     }
 
-    private Transfer mapRowToTransfer(Transfer transfer) {
-        return null;
+    private Transfer mapRowToTransfer(SqlRowSet rowSet) {
+        Transfer transfer = new Transfer();
+        transfer.setTransferId(rowSet.getInt("transfer_id"));
+        transfer.setTransferTypeId(rowSet.getInt("transfer_type_id"));
+        transfer.setTransferStatusId(rowSet.getInt("transfer_status_id"));
+        transfer.setAccountFrom(rowSet.getInt("account_from"));
+        transfer.setAccountTo(rowSet.getInt("account_to"));
+        transfer.setAmount(rowSet.getBigDecimal("amount"));
+
+        return transfer;
     }
 }

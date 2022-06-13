@@ -5,6 +5,8 @@ import com.techelevator.tenmo.model.Transfer;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @PreAuthorize("isAuthenticated()")
 public class TransferController {
@@ -20,4 +22,13 @@ public class TransferController {
         return transferDao.createTransfer(transfer);
     }
 
+    @GetMapping(path = "/transfers/{userId}")
+    public List<Transfer> getTransferByUserId(@RequestBody Transfer transfer, @PathVariable int userId) {
+        return transferDao.getTransfersByUserId(userId);
+    }
+
+    @GetMapping(path = "/transfer/{transferId}")
+    public Transfer getTransferByTransferId(@RequestBody Transfer transfer, @PathVariable int transferId) {
+        return transferDao.getTransferByTransferId(transferId);
+    }
 }

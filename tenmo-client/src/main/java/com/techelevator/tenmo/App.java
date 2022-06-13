@@ -1,5 +1,6 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.*;
@@ -120,8 +121,17 @@ public class App {
 
             if(transferService.createSendTransfer(currentUser, fromAccountId, toAccountId, amount)) {
                 //call transfer logic methods
+                Account fromAccount = accountService.getAccountByAccountId(currentUser, fromAccountId);
+                Account toAccount = accountService.getAccountByAccountId(currentUser, toAccountId);
+                fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+                toAccount.setBalance(toAccount.getBalance().add(amount));
+                boolean fromSuccess = accountService.updateAccount(fromAccount, currentUser);
+                boolean toSuccess = accountService.updateAccount(toAccount, currentUser);
+
                 //write out success message
+                if (fromSuccess && toSuccess) {
                 System.out.println("Success!");
+                }
             } else {
                 System.out.println("Failure");
             }

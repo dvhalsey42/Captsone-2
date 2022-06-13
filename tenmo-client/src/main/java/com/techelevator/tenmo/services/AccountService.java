@@ -51,7 +51,7 @@ public class AccountService {
 
         try {
             ResponseEntity<Account> response =
-                    restTemplate.exchange(API_BASE_URL + "/account/?account_id=" + accountId, HttpMethod.GET, makeAuthEntity(user), Account.class);
+                    restTemplate.exchange(API_BASE_URL + "/account?account_id=" + accountId, HttpMethod.GET, makeAuthEntity(user), Account.class);
             account = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
@@ -63,7 +63,7 @@ public class AccountService {
         boolean result = false;
         try {
             ResponseEntity<Boolean> response =
-                    restTemplate.exchange(API_BASE_URL + "/user" + user.getUser().getId(), HttpMethod.PUT, makeAccountEntity(account, user), Boolean.class);
+                    restTemplate.exchange(API_BASE_URL + "/account", HttpMethod.PUT, makeAccountEntity(account, user), boolean.class);
             result = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());

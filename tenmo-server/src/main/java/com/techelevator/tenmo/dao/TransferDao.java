@@ -10,9 +10,9 @@ public interface TransferDao {
 
     List<Transfer> getTransfersByUserId(int userId);
 
-    Transfer getTransfersByTransferId(int transferId);
+    Transfer getTransferByTransferId(int transferId);
 
-    List<Transfer> getAllTransfers();
+//    List<Transfer> getAllTransfers();
 
     List<Transfer> getPendingTransfers(int userId);
 
