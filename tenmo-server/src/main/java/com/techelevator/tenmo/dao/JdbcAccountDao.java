@@ -26,7 +26,6 @@ public class JdbcAccountDao implements AccountDao {
 
         BigDecimal balance = null;
         String sql = "SELECT balance FROM account " +
-                "JOIN tenmo_user USING(user_id)" +
                 "WHERE user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
 

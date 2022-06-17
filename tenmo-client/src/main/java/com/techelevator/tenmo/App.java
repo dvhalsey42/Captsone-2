@@ -84,7 +84,7 @@ public class App {
             } else if (menuSelection == 5) {
                 requestBucks();
             } else if (menuSelection == 0) {
-                break;
+                continue;
             } else {
                 System.out.println("Invalid Selection");
             }
@@ -107,9 +107,11 @@ public class App {
         }
         for (Transfer transfer : transfers) {
             if (transfer.getTransferId() == transferId) {
-                consoleService.displayTransferDetails(transfer);
+                consoleService.displayTransferDetails(currentUser, transfer);
+
             }
         }
+        consoleService.pause();
 
 
 
@@ -133,7 +135,7 @@ public class App {
                     Account toAccount = accountService.getAccountByAccountId(currentUser, transfer.getAccountTo());
                     fromAccount.setBalance(fromAccount.getBalance().subtract(transfer.getAmount()));
                     toAccount.setBalance(toAccount.getBalance().add(transfer.getAmount()));
-
+//TODO make sure requests cannot be approved if sender doesn't have sufficient funds
                     boolean fromSuccess = accountService.updateAccount(fromAccount, currentUser);
                     boolean toSuccess = accountService.updateAccount(toAccount, currentUser);
                     if (fromSuccess && toSuccess) {

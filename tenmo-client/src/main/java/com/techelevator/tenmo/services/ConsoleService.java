@@ -102,10 +102,10 @@ public class ConsoleService {
     public void displayPastTransfers(AuthenticatedUser user, List<Transfer> transfers) {
         System.out.println("-------------------------------------------");
         System.out.println("Transfers");
-        System.out.println("ID      From/To         Amount");
+        System.out.println("ID         From/To         Amount");
         System.out.println("-------------------------------------------");
         for (Transfer transfer : transfers) {
-            System.out.println(transfer.getTransferId() + "       ");
+            System.out.print(transfer.getTransferId() + "       ");
             String username = "";
             if (transfer.getTransferTypeId() == 1) {
                 username = userService.getUsernameByAccountId(user, transfer.getAccountTo());
@@ -114,22 +114,41 @@ public class ConsoleService {
                 username = userService.getUsernameByAccountId(user, transfer.getAccountFrom());
                 System.out.print("To: " + username);
             }
-            System.out.print("        " + transfer.getAmount());
-            System.out.println("---------");
+            System.out.println("        " + transfer.getAmount());
+
             // need to show transfers from or to currentUser's account. To do this, I need to get username of the account that doesn't match
             // currentUser's accountId and distinguish From or To
         }
+        System.out.println("---------");
     }
 
-    public void displayTransferDetails(Transfer transfer) {
+    public void displayTransferDetails(AuthenticatedUser user, Transfer transfer) {
+        String type = "";
+        String status = "";
+        int typeId = transfer.getTransferTypeId();
+        int statusId = transfer.getTransferStatusId();
+        String fromUsername = userService.getUsernameByAccountId(user, transfer.getAccountFrom());
+        String toUsername = userService.getUsernameByAccountId(user, transfer.getAccountTo());
+
+        if (typeId == 1) {
+            type = "REQUEST";
+        } else if (typeId == 2) {
+            type = "SEND";
+        }
+        if (statusId == 2) {
+            status = "APPROVED";
+        } else if (statusId == 3) {
+            status = "REJECTED";
+        }
+
         System.out.println("-------------------------------------------");
         System.out.println("Transfer Details");
         System.out.println("-------------------------------------------");
         System.out.println("Id: " + transfer.getTransferId());
-        System.out.println("From: " + transfer);
-        System.out.println("To: " + transfer);
-        System.out.println("Type: " + transfer.getTransferTypeId());
-        System.out.println("Status: " + transfer.getTransferStatusId());
+        System.out.println("From: " + fromUsername);
+        System.out.println("To: " + toUsername);
+        System.out.println("Type: " + type);
+        System.out.println("Status: " + status);
         System.out.println("Amount: $" + transfer.getAmount());
     }
 

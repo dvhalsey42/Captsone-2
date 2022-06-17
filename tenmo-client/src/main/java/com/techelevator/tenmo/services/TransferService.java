@@ -30,7 +30,7 @@ public class TransferService {
 
         ResponseEntity<Boolean> response =
                 restTemplate.exchange(API_BASE_URL + "/transfer", HttpMethod.POST,
-                        makeTransferEntity(transfer, user), Boolean.class);
+                        makeTransferEntity(transfer, user), boolean.class);
         if(response.getBody() != null) {
             return response.getBody();
         }
@@ -38,15 +38,15 @@ public class TransferService {
     }
 
     public List<Transfer> getPastTransfers(AuthenticatedUser user) {
-        List<Transfer> transfers = new ArrayList<>();
+        List<Transfer> pastTransfers = new ArrayList<>();
         try {
             ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "/transfers/" +
                     user.getUser().getId(), HttpMethod.GET, makeAuthEntity(user), Transfer[].class);
-            transfers = Arrays.asList((Transfer[])Objects.requireNonNull((Transfer[])response.getBody()));
+            pastTransfers = Arrays.asList((Transfer[])Objects.requireNonNull((Transfer[])response.getBody()));
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return transfers;
+        return pastTransfers;
     }
 
     public List<Transfer> getPendingTransfers(AuthenticatedUser user) {
