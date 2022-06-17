@@ -2,10 +2,12 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class App {
 
@@ -65,6 +67,7 @@ public class App {
         }
     }
 
+    //add pending transfers notification on login
     private void mainMenu() {
         int menuSelection = -1;
         while (menuSelection != 0) {
@@ -81,7 +84,7 @@ public class App {
             } else if (menuSelection == 5) {
                 requestBucks();
             } else if (menuSelection == 0) {
-                continue;
+                break;
             } else {
                 System.out.println("Invalid Selection");
             }
@@ -90,19 +93,64 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
         System.out.println("Your current account balance is: " + accountService.getBalance(currentUser));
         consoleService.pause();
         mainMenu();
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
-	}
+        List<Transfer> transfers = transferService.getPastTransfers(currentUser);
+        consoleService.displayPastTransfers(currentUser, transfers);
+        int transferId = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
+        if (transferId == 0) {
+            mainMenu();
+        }
+        for (Transfer transfer : transfers) {
+            if (transfer.getTransferId() == transferId) {
+                consoleService.displayTransferDetails(transfer);
+            }
+        }
+
+
+
+    }
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+        List<Transfer> transfers = transferService.getPendingTransfers(currentUser);
+        consoleService.displayPendingTransfers(currentUser, transfers);
+        int transferId = consoleService.promptForInt("Please enter transfer ID to approve/reject (0 to cancel): ");
+        if (transferId == 0) {
+            mainMenu();
+        }
+        for (Transfer transfer : transfers) {
+            if (transfer.getTransferId() == transferId) {
+                consoleService.approveOrRejectPendingTransfer();
+                int choice = consoleService.promptForInt("Please choose an option: ");
+                if (choice == 1) {
+                    transferService.approveTransfer(currentUser, transfer);
+                //update account balances
+                    Account fromAccount = accountService.getAccountByAccountId(currentUser, transfer.getAccountFrom());
+                    Account toAccount = accountService.getAccountByAccountId(currentUser, transfer.getAccountTo());
+                    fromAccount.setBalance(fromAccount.getBalance().subtract(transfer.getAmount()));
+                    toAccount.setBalance(toAccount.getBalance().add(transfer.getAmount()));
+
+                    boolean fromSuccess = accountService.updateAccount(fromAccount, currentUser);
+                    boolean toSuccess = accountService.updateAccount(toAccount, currentUser);
+                    if (fromSuccess && toSuccess) {
+                        System.out.println("Success!");
+                    } else {
+                    System.out.println("Failure");
+                    }
+                } else if (choice == 2) {
+                    transferService.rejectTransfer(currentUser, transfer);
+                } else {
+                    mainMenu();
+                }
+
+            }
+        }
+
+
 		
 	}
 
@@ -119,7 +167,7 @@ public class App {
             int fromAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
             int toAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();
 
-            if(transferService.createSendTransfer(currentUser, fromAccountId, toAccountId, amount)) {
+            if(transferService.createTransfer(currentUser, 2, 2, fromAccountId, toAccountId, amount)) {
                 //call transfer logic methods
                 Account fromAccount = accountService.getAccountByAccountId(currentUser, fromAccountId);
                 Account toAccount = accountService.getAccountByAccountId(currentUser, toAccountId);
@@ -139,9 +187,23 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
+
         consoleService.displayAllUsers(userService.getAllUsers(currentUser), currentUser);
-        consoleService.pause();
+        int userId = consoleService.promptForInt("Enter ID of user you are requesting from (0 to cancel):");
+        if (userId == 0) {
+            mainMenu();
+        }
+        BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
+        if (amount.signum() > 0 && userId != currentUser.getUser().getId()) {
+            int fromAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();
+            int toAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
+
+            if (transferService.createTransfer(currentUser, 1, 1, fromAccountId, toAccountId, amount)) {
+                System.out.println("success");
+            }
+            else System.out.println("failure");
+
+        }
     }
 
 }

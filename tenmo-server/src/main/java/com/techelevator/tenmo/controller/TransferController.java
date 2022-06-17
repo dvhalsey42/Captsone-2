@@ -23,12 +23,22 @@ public class TransferController {
     }
 
     @GetMapping(path = "/transfers/{userId}")
-    public List<Transfer> getTransferByUserId(@RequestBody Transfer transfer, @PathVariable int userId) {
+    public List<Transfer> getTransfersByUserId(@RequestBody Transfer transfer, @PathVariable int userId) {
         return transferDao.getTransfersByUserId(userId);
     }
 
     @GetMapping(path = "/transfer/{transferId}")
     public Transfer getTransferByTransferId(@RequestBody Transfer transfer, @PathVariable int transferId) {
         return transferDao.getTransferByTransferId(transferId);
+    }
+
+    @GetMapping(path = "/transfers/pending/{userId}")
+    public List<Transfer> getPendingTransfers(@PathVariable int userId) {
+        return transferDao.getPendingTransfers(userId);
+    }
+
+    @PutMapping(path = "/transfer")
+    public boolean updateTransfer(@RequestBody Transfer transfer) {
+        return transferDao.updateTransfer(transfer);
     }
 }

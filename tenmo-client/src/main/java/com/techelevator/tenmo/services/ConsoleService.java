@@ -8,11 +8,13 @@ import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
 import java.sql.SQLOutput;
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleService {
 
     private final Scanner scanner = new Scanner(System.in);
+    private UserService userService = new UserService();
 
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
@@ -84,20 +86,74 @@ public class ConsoleService {
     }
 
     public void displayAllUsers(User[] users, AuthenticatedUser currentUser) {
-        System.out.println("-------------------------------------");
+        System.out.println("-------------------------------------------");
         System.out.println("Users");
         System.out.println("ID      Name");
-        System.out.println("-------------------------------------");
+        System.out.println("-------------------------------------------");
         for (User user : users) {
             if (!user.getId().equals(currentUser.getUser().getId())) {
                 System.out.println(user.getId() + "    " + user.getUsername());
             }
         }
-        System.out.println("----------" + System.lineSeparator());
+        System.out.println("---------" + System.lineSeparator());
 
     }
 
+    public void displayPastTransfers(AuthenticatedUser user, List<Transfer> transfers) {
+        System.out.println("-------------------------------------------");
+        System.out.println("Transfers");
+        System.out.println("ID      From/To         Amount");
+        System.out.println("-------------------------------------------");
+        for (Transfer transfer : transfers) {
+            System.out.println(transfer.getTransferId() + "       ");
+            String username = "";
+            if (transfer.getTransferTypeId() == 1) {
+                username = userService.getUsernameByAccountId(user, transfer.getAccountTo());
+                System.out.print("From: " + username);
+            } else if (transfer.getTransferTypeId() == 2) {
+                username = userService.getUsernameByAccountId(user, transfer.getAccountFrom());
+                System.out.print("To: " + username);
+            }
+            System.out.print("        " + transfer.getAmount());
+            System.out.println("---------");
+            // need to show transfers from or to currentUser's account. To do this, I need to get username of the account that doesn't match
+            // currentUser's accountId and distinguish From or To
+        }
+    }
 
+    public void displayTransferDetails(Transfer transfer) {
+        System.out.println("-------------------------------------------");
+        System.out.println("Transfer Details");
+        System.out.println("-------------------------------------------");
+        System.out.println("Id: " + transfer.getTransferId());
+        System.out.println("From: " + transfer);
+        System.out.println("To: " + transfer);
+        System.out.println("Type: " + transfer.getTransferTypeId());
+        System.out.println("Status: " + transfer.getTransferStatusId());
+        System.out.println("Amount: $" + transfer.getAmount());
+    }
+
+    public void displayPendingTransfers(AuthenticatedUser user, List<Transfer> transfers) {
+        System.out.println("-------------------------------------------");
+        System.out.println("Pending Transfers");
+        System.out.println("ID        To                Amount");
+        System.out.println("-------------------------------------------");
+        for (Transfer transfer : transfers) {
+            String username = userService.getUsernameByAccountId(user, transfer.getAccountTo());
+            System.out.println(transfer.getTransferId() + "          " + username + "         " + transfer.getAmount());
+        }
+        System.out.println("---------");
+        // create object server side to send all pending transfer info?
+
+    }
+
+    public void approveOrRejectPendingTransfer() {
+        System.out.println();
+        System.out.println("1: Approve");
+        System.out.println("2: Reject");
+        System.out.println("0: Don't approve or reject");
+        System.out.println("---------");
+    }
 
     public void pause() {
         System.out.println("\nPress Enter to continue...");

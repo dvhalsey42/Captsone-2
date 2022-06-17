@@ -69,7 +69,6 @@ public class JdbcAccountDao implements AccountDao {
                 "WHERE account_id = ?;";
         return jdbcTemplate.update(sql, account.getAccountId(),
                 account.getUserId(), account.getBalance(), account.getAccountId()) == 1;
-
     }
 
     private Account mapRowToAccount(SqlRowSet rs) {

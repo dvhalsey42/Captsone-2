@@ -30,6 +30,18 @@ public class UserService {
         return users;
     }
 
+    public String getUsernameByAccountId(AuthenticatedUser user, int accountId) {
+        String username = "";
+        try {
+            ResponseEntity<String> response =
+                    restTemplate.exchange(API_BASE_URL + "/user/" + accountId, HttpMethod.GET,makeAuthEntity(user), String.class);
+                username = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return username;
+    }
+
     private HttpEntity<Void> makeAuthEntity(AuthenticatedUser user) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(user.getToken());

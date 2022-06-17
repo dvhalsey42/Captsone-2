@@ -8,7 +8,7 @@ public class Transfer {
 
     enum TransferType {
         REQUEST,
-        SEND
+        SEND;
     }
 
     enum TransferStatus {
