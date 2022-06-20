@@ -153,6 +153,20 @@ public class ConsoleService {
         System.out.println("Amount: $" + transfer.getAmount());
     }
 
+    public void displayRequestedPendingTransfers(AuthenticatedUser user, List<Transfer> transfers) {
+        System.out.println("-------------------------------------------");
+        System.out.println("Pending Transfers");
+        System.out.println("ID        From                Amount");
+        System.out.println("-------------------------------------------");
+        for (Transfer transfer : transfers) {
+            String username = userService.getUsernameByAccountId(user, transfer.getAccountTo());
+            System.out.println(transfer.getTransferId() + "          " + username + "         " + transfer.getAmount());
+        }
+        System.out.println("---------");
+        // create object server side to send all pending transfer info?
+
+    }
+
     public void displayPendingTransfers(AuthenticatedUser user, List<Transfer> transfers) {
         System.out.println("-------------------------------------------");
         System.out.println("Pending Transfers");

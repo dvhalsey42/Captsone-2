@@ -97,7 +97,7 @@ public class App {
 
     private void viewUserPendingTransfers(){
         List<Transfer> transfers = transferService.getUsersPendingTransfers(currentUser);
-        consoleService.displayPendingTransfers(currentUser, transfers);
+        consoleService.displayRequestedPendingTransfers(currentUser, transfers);
     }
 
 	private void viewCurrentBalance() {
