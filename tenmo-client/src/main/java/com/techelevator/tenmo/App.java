@@ -181,7 +181,7 @@ public class App {
             }
         }
 
-        if(isRealUser) {
+        if(isRealUser && userId != currentUser.getUser().getId()) {
             BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
             if (amount.signum() > 0 && amount.compareTo(accountService.getBalance(currentUser)) <= 0) {
 
@@ -226,7 +226,7 @@ public class App {
                 isRealUser = true;
             }
         }
-        if(isRealUser) {
+        if(isRealUser && userId != currentUser.getUser().getId()) {
             BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
             if (amount.signum() > 0 && userId != currentUser.getUser().getId()) {
                 int fromAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();

@@ -19,6 +19,7 @@ public class UserController {
         this.userDao = userDao;
     }
 
+
     @GetMapping(path = "/user")
     public List<User> findAll() {
         return userDao.findAll();
