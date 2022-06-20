@@ -1,5 +1,6 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.exception.InsufficientFundsException;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.Transfer;
@@ -84,7 +85,7 @@ public class App {
             } else if (menuSelection == 5) {
                 requestBucks();
             } else if (menuSelection == 0) {
-                continue;
+                System.exit(1);
             } else {
                 System.out.println("Invalid Selection");
             }
@@ -156,9 +157,9 @@ public class App {
 		
 	}
 
-	private void sendBucks() {
+	private void sendBucks() throws InsufficientFundsException {
 
-		consoleService.displayAllUsers(userService.getAllUsers(currentUser), currentUser);
+        consoleService.displayAllUsers(userService.getAllUsers(currentUser), currentUser);
         int userId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
         if (userId == 0) {
             mainMenu();
