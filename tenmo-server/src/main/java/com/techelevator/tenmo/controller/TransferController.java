@@ -37,6 +37,11 @@ public class TransferController {
         return transferDao.getPendingTransfers(userId);
     }
 
+    @GetMapping(path = "/transfers/pending/currentuser/{userId}")
+    public List<Transfer> getUsersPendingTransfers(@PathVariable int userId){
+        return transferDao.getUsersPendingTransfers(userId);
+    }
+
     @PutMapping(path = "/transfer")
     public boolean updateTransfer(@RequestBody Transfer transfer) {
         return transferDao.updateTransfer(transfer);

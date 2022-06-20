@@ -1,10 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.exception.InsufficientFundsException;
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
@@ -72,6 +69,9 @@ public class App {
     private void mainMenu() {
         int menuSelection = -1;
         while (menuSelection != 0) {
+            if(transferService.getPendingTransfers(currentUser).size() > 0){
+                System.out.println("\n***You have pending transfers***");
+            }
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
             if (menuSelection == 1) {
@@ -84,6 +84,8 @@ public class App {
                 sendBucks();
             } else if (menuSelection == 5) {
                 requestBucks();
+            } else if (menuSelection == 6) {
+                viewUserPendingTransfers();
             } else if (menuSelection == 0) {
                 System.exit(1);
             } else {
@@ -91,6 +93,11 @@ public class App {
             }
             consoleService.pause();
         }
+    }
+
+    private void viewUserPendingTransfers(){
+        List<Transfer> transfers = transferService.getUsersPendingTransfers(currentUser);
+        consoleService.displayPendingTransfers(currentUser, transfers);
     }
 
 	private void viewCurrentBalance() {
@@ -129,14 +136,13 @@ public class App {
             if (transfer.getTransferId() == transferId) {
                 consoleService.approveOrRejectPendingTransfer();
                 int choice = consoleService.promptForInt("Please choose an option: ");
-                if (choice == 1) {
+                if (choice == 1 && (transfer.getAmount().compareTo(accountService.getBalance(currentUser)) <= 0)) {
                     transferService.approveTransfer(currentUser, transfer);
                 //update account balances
                     Account fromAccount = accountService.getAccountByAccountId(currentUser, transfer.getAccountFrom());
                     Account toAccount = accountService.getAccountByAccountId(currentUser, transfer.getAccountTo());
                     fromAccount.setBalance(fromAccount.getBalance().subtract(transfer.getAmount()));
                     toAccount.setBalance(toAccount.getBalance().add(transfer.getAmount()));
-//TODO make sure requests cannot be approved if sender doesn't have sufficient funds
                     boolean fromSuccess = accountService.updateAccount(fromAccount, currentUser);
                     boolean toSuccess = accountService.updateAccount(toAccount, currentUser);
                     if (fromSuccess && toSuccess) {
@@ -144,7 +150,10 @@ public class App {
                     } else {
                     System.out.println("Failure");
                     }
-                } else if (choice == 2) {
+                }else if(choice == 1){
+                    System.out.println("Insufficient Funds");
+                }
+                else if (choice == 2) {
                     transferService.rejectTransfer(currentUser, transfer);
                 } else {
                     mainMenu();
@@ -157,35 +166,50 @@ public class App {
 		
 	}
 
-	private void sendBucks() throws InsufficientFundsException {
+	private void sendBucks() {
 
         consoleService.displayAllUsers(userService.getAllUsers(currentUser), currentUser);
         int userId = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel):");
         if (userId == 0) {
             mainMenu();
         }
-        BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
-        if (amount.signum() > 0 && amount.compareTo(accountService.getBalance(currentUser)) <= 0) {
 
-            int fromAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
-            int toAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();
+        boolean isRealUser = false;
+        for(User user:userService.getAllUsers(currentUser)){
+            if(userId == user.getId()){
+                isRealUser = true;
+            }
+        }
 
-            if(transferService.createTransfer(currentUser, 2, 2, fromAccountId, toAccountId, amount)) {
-                //call transfer logic methods
-                Account fromAccount = accountService.getAccountByAccountId(currentUser, fromAccountId);
-                Account toAccount = accountService.getAccountByAccountId(currentUser, toAccountId);
-                fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
-                toAccount.setBalance(toAccount.getBalance().add(amount));
-                boolean fromSuccess = accountService.updateAccount(fromAccount, currentUser);
-                boolean toSuccess = accountService.updateAccount(toAccount, currentUser);
+        if(isRealUser) {
+            BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
+            if (amount.signum() > 0 && amount.compareTo(accountService.getBalance(currentUser)) <= 0) {
 
-                //write out success message
-                if (fromSuccess && toSuccess) {
-                System.out.println("Success!");
+                int fromAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
+                int toAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();
+
+                if (transferService.createTransfer(currentUser, 2, 2, fromAccountId, toAccountId, amount)) {
+                    //call transfer logic methods
+                    Account fromAccount = accountService.getAccountByAccountId(currentUser, fromAccountId);
+                    Account toAccount = accountService.getAccountByAccountId(currentUser, toAccountId);
+                    fromAccount.setBalance(fromAccount.getBalance().subtract(amount));
+                    toAccount.setBalance(toAccount.getBalance().add(amount));
+                    boolean fromSuccess = accountService.updateAccount(fromAccount, currentUser);
+                    boolean toSuccess = accountService.updateAccount(toAccount, currentUser);
+
+                    //write out success message
+                    if (fromSuccess && toSuccess) {
+                        System.out.println("Success!");
+                    }
+                } else {
+                    System.out.println("Failure");
                 }
             } else {
-                System.out.println("Failure");
+                System.out.println("Insufficient Funds");
             }
+        }
+        else{
+            System.out.println("Invalid user selected");
         }
 	}
 
@@ -196,16 +220,24 @@ public class App {
         if (userId == 0) {
             mainMenu();
         }
-        BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
-        if (amount.signum() > 0 && userId != currentUser.getUser().getId()) {
-            int fromAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();
-            int toAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
-
-            if (transferService.createTransfer(currentUser, 1, 1, fromAccountId, toAccountId, amount)) {
-                System.out.println("success");
+        boolean isRealUser = false;
+        for(User user:userService.getAllUsers(currentUser)){
+            if(userId == user.getId()){
+                isRealUser = true;
             }
-            else System.out.println("failure");
+        }
+        if(isRealUser) {
+            BigDecimal amount = consoleService.promptForBigDecimal("Enter amount:");
+            if (amount.signum() > 0 && userId != currentUser.getUser().getId()) {
+                int fromAccountId = accountService.getAccountByUserId(currentUser, (long) userId).getAccountId();
+                int toAccountId = accountService.getAccountByUserId(currentUser, currentUser.getUser().getId()).getAccountId();
 
+                transferService.createTransfer(currentUser, 1, 1, fromAccountId, toAccountId, amount);
+
+            }
+        }
+        else{
+            System.out.println("Invalid user selected");
         }
     }
 

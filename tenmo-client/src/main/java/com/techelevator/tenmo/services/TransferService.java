@@ -61,6 +61,18 @@ public class TransferService {
         return transfers;
     }
 
+    public List<Transfer> getUsersPendingTransfers(AuthenticatedUser user){
+        List<Transfer> transfers = new ArrayList<>();
+        try {
+            ResponseEntity<Transfer[]> response = restTemplate.exchange(API_BASE_URL + "/transfers/pending/currentuser/" +
+                    user.getUser().getId(), HttpMethod.GET, makeAuthEntity(user), Transfer[].class);
+            transfers = Arrays.asList((Transfer[]) Objects.requireNonNull((Transfer[]) response.getBody()));
+        } catch(RestClientResponseException | ResourceAccessException e){
+            BasicLogger.log(e.getMessage());
+        }
+        return transfers;
+    }
+
     // make sure transferId is valid
     // display to approve or reject
     // update accounts and change transfer status
