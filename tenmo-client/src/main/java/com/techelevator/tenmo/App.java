@@ -120,9 +120,6 @@ public class App {
             }
         }
         consoleService.pause();
-
-
-
     }
 
 	private void viewPendingRequests() {
@@ -132,6 +129,18 @@ public class App {
         if (transferId == 0) {
             mainMenu();
         }
+
+        boolean isValidTransfer = false;
+        for(Transfer transfer:transfers){
+            if(transfer.getTransferId() == transferId){
+                isValidTransfer = true;
+            }
+        }
+        if(!isValidTransfer){
+            System.out.println("Please enter a valid transfer ID");
+            viewPendingRequests();
+        }
+
         for (Transfer transfer : transfers) {
             if (transfer.getTransferId() == transferId) {
                 consoleService.approveOrRejectPendingTransfer();
