@@ -209,7 +209,7 @@ public class App {
             }
         }
         else{
-            System.out.println("Invalid user selected");
+            System.out.println("Invalid user selection");
         }
 	}
 
