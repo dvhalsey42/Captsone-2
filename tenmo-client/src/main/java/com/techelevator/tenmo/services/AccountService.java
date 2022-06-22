@@ -19,7 +19,8 @@ public class AccountService {
     public AccountService() {
 
     }
-
+    //Takes an authenticaed user and sends get request to server to receive balance of
+    //current user
     public BigDecimal getBalance(AuthenticatedUser user) {
         BigDecimal balance = null;
 
@@ -32,7 +33,7 @@ public class AccountService {
         }
         return balance;
     }
-
+    //Requests an account object from the server that matches the input userId
     public Account getAccountByUserId(AuthenticatedUser user, Long userId) {
         Account account = null;
 
@@ -45,7 +46,7 @@ public class AccountService {
         }
         return account;
     }
-
+    //Takes accountId int and requests corresponding full account object from server
     public Account getAccountByAccountId(AuthenticatedUser user, int accountId) {
         Account account = null;
 
@@ -58,7 +59,7 @@ public class AccountService {
         }
         return account;
     }
-
+    //takes a full account object input and updates the info in the server
     public boolean updateAccount(Account account, AuthenticatedUser user) {
         boolean result = false;
         try {

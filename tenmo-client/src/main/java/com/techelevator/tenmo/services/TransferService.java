@@ -20,6 +20,8 @@ public class TransferService {
     private static final String API_BASE_URL = "http://localhost:8080";
     RestTemplate restTemplate = new RestTemplate();
 
+
+    //creates a new transfer object
     public boolean createTransfer(AuthenticatedUser user, int transferTypeId, int transferStatusId, int fromAccountId, int toAccountId, BigDecimal amount) {
         Transfer transfer = new Transfer();
         transfer.setTransferTypeId(transferTypeId);
@@ -36,7 +38,7 @@ public class TransferService {
         }
         return false;
     }
-
+    //returns a list of all completed past transfers
     public List<Transfer> getPastTransfers(AuthenticatedUser user) {
         List<Transfer> pastTransfers = new ArrayList<>();
         try {
@@ -48,7 +50,7 @@ public class TransferService {
         }
         return pastTransfers;
     }
-
+    //returns a list of all the users pending transfers
     public List<Transfer> getPendingTransfers(AuthenticatedUser user) {
         List<Transfer> transfers = new ArrayList<>();
         try {
@@ -60,7 +62,7 @@ public class TransferService {
         }
         return transfers;
     }
-
+    //returns a list of all user requested pending transfers
     public List<Transfer> getUsersPendingTransfers(AuthenticatedUser user){
         List<Transfer> transfers = new ArrayList<>();
         try {
@@ -73,9 +75,7 @@ public class TransferService {
         return transfers;
     }
 
-    // make sure transferId is valid
-    // display to approve or reject
-    // update accounts and change transfer status
+    //updates a pending transfer object to confirmed
     public boolean approveTransfer(AuthenticatedUser user, Transfer transfer) {
         boolean success = false;
 
@@ -91,7 +91,7 @@ public class TransferService {
         }
         return success;
     }
-
+    //updates a pending transfer object to rejected
     public boolean rejectTransfer(AuthenticatedUser user, Transfer transfer) {
         boolean success = false;
 

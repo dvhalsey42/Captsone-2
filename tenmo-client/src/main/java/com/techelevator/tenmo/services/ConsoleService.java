@@ -16,6 +16,7 @@ public class ConsoleService {
     private final Scanner scanner = new Scanner(System.in);
     private UserService userService = new UserService();
 
+    //displays the main menu and takes the user selection
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
         System.out.print(prompt);
@@ -52,18 +53,18 @@ public class ConsoleService {
         System.out.println("0: Exit");
         System.out.println();
     }
-
+    //prompts user to input username and password
     public UserCredentials promptForCredentials() {
         String username = promptForString("Username: ");
         String password = promptForString("Password: ");
         return new UserCredentials(username, password);
     }
-
+    //takes a string input from user
     public String promptForString(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
     }
-
+    //takes a string input and parses it into an integer
     public int promptForInt(String prompt) {
         System.out.print(prompt);
         while (true) {
@@ -74,7 +75,7 @@ public class ConsoleService {
             }
         }
     }
-
+    //takes a string input and parses it into a BigDecimal
     public BigDecimal promptForBigDecimal(String prompt) {
         System.out.print(prompt);
         while (true) {
@@ -85,7 +86,7 @@ public class ConsoleService {
             }
         }
     }
-
+    //displays a list of all users and their user id's to the user
     public void displayAllUsers(User[] users, AuthenticatedUser currentUser) {
         System.out.println("-------------------------------------------");
         System.out.println("Users");
@@ -99,7 +100,7 @@ public class ConsoleService {
         System.out.println("---------" + System.lineSeparator());
 
     }
-
+    //displays the users past transfers with option to view details.
     public void displayPastTransfers(AuthenticatedUser user, List<Transfer> transfers) {
         System.out.println("-------------------------------------------");
         System.out.println("Transfers");
@@ -117,12 +118,10 @@ public class ConsoleService {
             }
             System.out.println("        " + transfer.getAmount());
 
-            // need to show transfers from or to currentUser's account. To do this, I need to get username of the account that doesn't match
-            // currentUser's accountId and distinguish From or To
         }
         System.out.println("---------");
     }
-
+    //displays the details of a past transfer based on transfer id
     public void displayTransferDetails(AuthenticatedUser user, Transfer transfer) {
         String type = "";
         String status = "";
@@ -152,7 +151,7 @@ public class ConsoleService {
         System.out.println("Status: " + status);
         System.out.println("Amount: $" + transfer.getAmount());
     }
-
+    //displays all user requested pending transfers
     public void displayRequestedPendingTransfers(AuthenticatedUser user, List<Transfer> transfers) {
         System.out.println("-------------------------------------------");
         System.out.println("Pending Transfers");
@@ -166,7 +165,7 @@ public class ConsoleService {
         // create object server side to send all pending transfer info?
 
     }
-
+    //displays all users pending transfers
     public void displayPendingTransfers(AuthenticatedUser user, List<Transfer> transfers) {
         System.out.println("-------------------------------------------");
         System.out.println("Pending Transfers");

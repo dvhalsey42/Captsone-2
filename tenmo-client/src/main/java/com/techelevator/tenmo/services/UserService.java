@@ -16,8 +16,8 @@ public class UserService {
     private static final String API_BASE_URL = "http://localhost:8080";
     RestTemplate restTemplate = new RestTemplate();
 
+    //returns a list of all users
     public User[] getAllUsers(AuthenticatedUser user) {
-//        List<User> users = new ArrayList<>();
         User[] users = null;
 
         try {
@@ -29,7 +29,7 @@ public class UserService {
         }
         return users;
     }
-
+    //returns a user object by corresponding account id
     public String getUsernameByAccountId(AuthenticatedUser user, int accountId) {
         String username = "";
         try {

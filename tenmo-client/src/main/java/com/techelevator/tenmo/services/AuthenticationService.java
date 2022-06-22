@@ -21,7 +21,7 @@ public class AuthenticationService {
     public AuthenticationService(String url) {
         this.baseUrl = url;
     }
-
+    //takes userCredentials and checks them in the database, returning an authenticated user object
     public AuthenticatedUser login(UserCredentials credentials) {
         HttpEntity<UserCredentials> entity = createCredentialsEntity(credentials);
         AuthenticatedUser user = null;
@@ -35,6 +35,7 @@ public class AuthenticationService {
         return user;
     }
 
+    //takes usercredentials and creates an authenticated user in the database
     public boolean register(UserCredentials credentials) {
         HttpEntity<UserCredentials> entity = createCredentialsEntity(credentials);
         boolean success = false;
