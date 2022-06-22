@@ -101,7 +101,7 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        System.out.println("Your current account balance is: " + accountService.getBalance(currentUser));
+        System.out.println("Your current account balance is: $" + accountService.getBalance(currentUser));
         consoleService.pause();
         mainMenu();
 	}
@@ -167,7 +167,6 @@ public class App {
                 } else {
                     mainMenu();
                 }
-
             }
         }
 

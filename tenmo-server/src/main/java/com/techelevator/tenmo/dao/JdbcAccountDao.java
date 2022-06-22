@@ -22,7 +22,7 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public BigDecimal getBalanceById(int userId) {
+    public BigDecimal getBalanceByUserId(int userId) {
 
         BigDecimal balance = null;
         String sql = "SELECT balance FROM account " +

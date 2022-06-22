@@ -15,18 +15,20 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class AccountController {
 
-    private AccountDao accountDao;
+    // This class
 
+    private AccountDao accountDao;
 
     public AccountController(AccountDao accountDao) {
        this.accountDao = accountDao;
     }
 
     @GetMapping(path = "balance/{userId}")
-    public BigDecimal getBalanceById(@PathVariable int userId) {
-        return accountDao.getBalanceById(userId);
+    public BigDecimal getBalanceByUserId(@PathVariable int userId) {
+        return accountDao.getBalanceByUserId(userId);
     }
 
+    // Gets Account by userId or accountId
     @GetMapping(path = "/account")
     public Account getAccountById(@RequestParam(defaultValue = "0") int user_id, @RequestParam(defaultValue = "0") int account_id) {
         if (user_id > 0) {
@@ -42,4 +44,5 @@ public class AccountController {
     public boolean updateAccount(@RequestBody Account account) {
         return accountDao.updateAccount(account);
     }
+
 }

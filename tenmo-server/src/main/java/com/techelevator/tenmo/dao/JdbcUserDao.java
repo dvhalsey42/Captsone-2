@@ -87,6 +87,7 @@ public class JdbcUserDao implements UserDao {
         return jdbcTemplate.queryForObject(sql, String.class, accountId);
     }
 
+    // Maps SqlRowSet to User object and returns it
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
         user.setId(rs.getLong("user_id"));

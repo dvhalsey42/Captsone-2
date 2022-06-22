@@ -17,11 +17,6 @@ public class TransferController {
         this.transferDao = transferDao;
     }
 
-    @PostMapping(path = "/transfer")
-    public boolean createTransfer(@RequestBody Transfer transfer) {
-        return transferDao.createTransfer(transfer);
-    }
-
     @GetMapping(path = "/transfers/{userId}")
     public List<Transfer> getTransfersByUserId(@PathVariable int userId) {
         return transferDao.getTransfersByUserId(userId);
@@ -40,6 +35,11 @@ public class TransferController {
     @GetMapping(path = "/transfers/pending/currentuser/{userId}")
     public List<Transfer> getUsersPendingTransfers(@PathVariable int userId){
         return transferDao.getUsersPendingTransfers(userId);
+    }
+
+    @PostMapping(path = "/transfer")
+    public boolean createTransfer(@RequestBody Transfer transfer) {
+        return transferDao.createTransfer(transfer);
     }
 
     @PutMapping(path = "/transfer")

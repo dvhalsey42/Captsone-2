@@ -32,7 +32,6 @@ public class JdbcTransferDao implements TransferDao{
         return transfers;
     }
 
-
     @Override
     public boolean createTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
@@ -70,11 +69,6 @@ public class JdbcTransferDao implements TransferDao{
         }
         return transfer;
     }
-
-//    @Override
-//    public List<Transfer> getAllTransfers() {
-//        return null;
-//    }
 
     @Override
     public List<Transfer> getPendingTransfers(int userId) {
